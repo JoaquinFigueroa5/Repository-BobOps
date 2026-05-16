@@ -24,3 +24,76 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ─── View Transitions ─────────────────────────────────────── */
+:root {
+  --duration-exit: 150ms;
+  --duration-enter: 240ms;
+  --slide-offset: 50px;
+}
+
+/* nav-forward: sale a la izquierda / entra desde la derecha */
+::view-transition-old(.nav-forward) {
+  animation:
+    var(--duration-exit) ease-in both fade reverse,
+    var(--duration-exit) ease-in-out both slide-x reverse;
+  --slide-dir: -1;
+}
+::view-transition-new(.nav-forward) {
+  animation:
+    var(--duration-enter) ease-out var(--duration-exit) both fade,
+    400ms ease-in-out both slide-x;
+  --slide-dir: 1;
+}
+
+/* nav-back: sale a la derecha / entra desde la izquierda */
+::view-transition-old(.nav-back) {
+  animation:
+    var(--duration-exit) ease-in both fade reverse,
+    var(--duration-exit) ease-in-out both slide-x-back reverse;
+  --slide-dir: 1;
+}
+::view-transition-new(.nav-back) {
+  animation:
+    var(--duration-enter) ease-out var(--duration-exit) both fade,
+    400ms ease-in-out both slide-x-back;
+  --slide-dir: -1;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-x {
+  from {
+    translate: var(--slide-offset) 0;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+
+@keyframes slide-x-back {
+  from {
+    translate: calc(var(--slide-offset) * -1) 0;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+
+/* Respeta la preferencia de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}
+
